@@ -1,0 +1,295 @@
+
+w many airplanes have listed speeds?  What is the minimum listed speed and the maximum listed speed?
+
+
+
+Query
+
+Number of airplanes with listed speed
+
+SELECT count(tailnum) FROM planes where speed is not null ;
+
+Results
+
+23
+
+
+
+Minimun spped
+
+select max(speed) from planes;
+
+Results
+
+432
+
+
+
+Maximun speed
+
+select min(speed) from planes;
+
+Results
+
+90
+
+
+
+
+
+2.What is the total distance flown by all of the planes in January 2013?  What is the total distance flown by all of the planes in January 2013 where the tailnum is missing?
+
+
+
+Total distance in january 2013
+
+select sum(distance) from flights where year=2013 and month=1;
+
+Results
+
+54,377,610
+
+
+
+total distance in January 2013 missing tailnum
+
+select sum(distance) from flights where year=2013 and month=1 and tailnum is null;
+
+results
+
+null
+
+
+
+3.What is the total distance flown for all planes on July 5, 2013 grouped by aircraft manufacturer?  
+
+Write this statement first using an INNER JOIN, then using a LEFT OUTER JOIN.  How do your results compare?
+
+
+
+total distans on 7/5/2013 by manufacturer
+
+select planes.manufacturer, sum(flights.distance) from flights inner join planes on (flights.tailnum=planes.tailnum)
+
+
+where flights.year=2013 and flights.month=7 and flights.day =5
+group by planes.manufacturer;
+
+Results
+
+AIRBUS	390,178
+
+AIRBUS INDUSTRIE	157,572
+
+BOEING	670,056
+
+EMBRAER	155,818
+
+CANADAIR	2,284
+
+BOMBARDIER INC	62,320
+
+MCDONNELL DOUGLAS	14,972
+
+AMERICAN AIRCRAFT INC	4,398
+
+MCDONNELL DOUGLAS AIRCRAFT CO	31,380
+
+MCDONNELL DOUGLAS CORPORATION	9,534
+
+CESSNA	5,796
+
+GULFSTREAM AEROSPACE	2,314
+
+DOUGLAS	2,178
+
+BARKER JACK L	1,874
+
+
+
+Using left outer join
+
+select planes.manufacturer, sum(flights.distance) from flights left outer join planes on (flights.tailnum=planes.tailnum)
+
+
+where flights.year=2013 and flights.month=7 and flights.day =5
+group by planes.manufacturer;
+
+Results
+
+AIRBUS INDUSTRIE	157,572
+
+EMBRAER	155,818
+
+BOEING	670,056
+
+BOMBARDIER INC	62,320
+
+AIRBUS	390,178
+
+DOUGLAS	2,178
+
+MCDONNELL DOUGLAS	14,972
+
+CESSNA	5,796
+
+BARKER JACK L	1,874
+
+AMERICAN AIRCRAFT INC	4,398
+
+GULFSTREAM AEROSPACE	2,314
+
+CANADAIR	2,284
+
+MCDONNELL DOUGLAS CORPORATION	9,534
+
+MCDONNELL DOUGLAS AIRCRAFT CO	31,380
+
+Null	25,5342
+
+
+
+4.Write and answer at least one question of your own choosing that joins information from at least three of the tables in the flights database.
+
+
+
+Query adding airlanes tables to add airlane name
+
+select planes.manufacturer, airlines.name, sum(flights.distance) 
+
+
+from flights inner join planes on (flights.tailnum=planes.tailnum)
+inner join airlines on (flights.carrier=airlines.carrier)
+
+
+where flights.year=2013 and flights.month=7 and flights.day =5
+
+
+group by planes.manufacturer, airlines.name 
+
+
+order by planes.manufacturer;
+
+
+
+Results
+
+AIRBUS	Delta Air Lines Inc.
+	19626
+
+AIRBUS	Frontier Airlines Inc.
+	6480
+
+AIRBUS	Hawaiian Airlines Inc.
+	9966
+
+AIRBUS	JetBlue Airways
+	246272
+
+AIRBUS	United Air Lines Inc.
+	13760
+
+AIRBUS	US Airways Inc.
+	29014
+
+AIRBUS	Virgin America
+	65060
+
+AIRBUS INDUSTRIE	Delta Air Lines Inc.
+	31880
+
+AIRBUS INDUSTRIE	JetBlue Airways
+	35924
+
+AIRBUS INDUSTRIE	United Air Lines Inc.
+	62364
+
+AIRBUS INDUSTRIE	US Airways Inc.
+	27404
+
+AMERICAN AIRCRAFT INC	American Airlines Inc.
+	4398
+
+BARKER JACK L	JetBlue Airways
+	1874
+
+BOEING	AirTran Airways Corporation
+	11526
+
+BOEING	Alaska Airlines Inc.
+	9608
+
+BOEING	American Airlines Inc.
+	63968
+
+BOEING	Delta Air Lines Inc.
+	184494
+
+BOEING	Southwest Airlines Co.
+	72910
+
+BOEING	United Air Lines Inc.
+	327550
+
+BOMBARDIER INC	Endeavor Air Inc.
+	46192
+
+BOMBARDIER INC	ExpressJet Airlines Inc.
+	13494
+
+BOMBARDIER INC	Mesa Airlines Inc.
+	2634
+
+CANADAIR	ExpressJet Airlines Inc.
+	2284
+
+CESSNA	American Airlines Inc.
+	2744
+
+CESSNA	Envoy Air
+	3052
+
+DOUGLAS	American Airlines Inc.
+	2178
+
+EMBRAER	ExpressJet Airlines Inc.
+	99970
+
+EMBRAER	JetBlue Airways
+	53504
+
+EMBRAER	US Airways Inc.
+	2344
+
+GULFSTREAM AEROSPACE	Envoy Air
+	2314
+
+MCDONNELL DOUGLAS	American Airlines Inc.
+	14972
+
+MCDONNELL DOUGLAS AIRCRAFT CO	Delta Air Lines Inc.
+	31380
+
+MCDONNELL DOUGLAS CORPORATION	Delta Air Lines Inc.
+	9534
+
+
+
+
+
+Part 2.
+
+I want to compare the total departure and arriving delay by location and see which airports present more problems to depart or arrive
+
+
+
+Query
+
+select origin, sum(dep_delay), dest, sum(arr_delay), count(flight)
+
+
+from flights 
+
+
+group by origin, dest
+;
